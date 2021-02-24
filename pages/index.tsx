@@ -1,65 +1,66 @@
 import Head from "next/head"
-import styles from "../styles/Home.module.css"
+import { InputGroup, FormControl } from "react-bootstrap"
+import { atom, useAtom } from "jotai"
+import marked from "marked"
+import styles from "../styles/TextInput.module.css"
+
+const textInputAtom = atom(`
+# Hello
+
+## Welcome
+
+This is some \`console.log("Inline code!")\`
+
+\`\`\`
+And this is a code block!
+\`\`\`
+
+You can also make text **bold**... whoa!
+
+There's also [links](https://www.freecodecamp.com), and
+> Block Quotes!
+
+- And of course there are lists.
+  - Some are bulleted.
+     - With different indentation levels.
+        - That look like this.
+
+![Image test](https://via.placeholder.com/150/92c952)
+`)
 
 export default function Home() {
+  const [input, setInput] = useAtom(textInputAtom)
+
   return (
-    <div className={styles.container}>
+    <div>
       <Head>
-        <title>Create Next App</title>
+        <title>Markdown Previewer</title>
         <link rel="icon" href="/favicon.ico" />
+        {/* <script
+          defer
+          src="https://cdn.freecodecamp.org/testable-projects-fcc/v1/bundle.js"
+        /> */}
       </Head>
 
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
+      <main className="py-3 px-3 row">
+        <InputGroup className="col-sm-6">
+          <FormControl
+            as="textarea"
+            id="editor"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            className={styles.textarea}
+          />
+        </InputGroup>
 
-        <p className={styles.description}>
-          Get started by editing{" "}
-          <code className={styles.code}>pages/index.tsx</code>
-        </p>
-
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
+        <div
+          id="preview"
+          className="col-sm-6"
+          dangerouslySetInnerHTML={{
+            __html: marked(input),
+          }}
+        />
       </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{" "}
-          <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
-        </a>
-      </footer>
     </div>
   )
 }
