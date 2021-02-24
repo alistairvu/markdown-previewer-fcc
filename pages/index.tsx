@@ -3,6 +3,7 @@ import { InputGroup, FormControl } from "react-bootstrap"
 import { atom, useAtom } from "jotai"
 import marked from "marked"
 import styles from "../styles/TextInput.module.css"
+import sanitizeHtml from "sanitize-html"
 
 const textInputAtom = atom(`
 # Hello
@@ -57,7 +58,17 @@ export default function Home() {
           id="preview"
           className="col-sm-6"
           dangerouslySetInnerHTML={{
-            __html: marked(input),
+            __html: sanitizeHtml(marked(input), {
+              allowedTags: sanitizeHtml.defaults.allowedTags.concat(["img"]),
+              disallowedTagsMode: "discard",
+              allowedAttributes: {
+                a: ["href", "name", "target"],
+                // We don't currently allow img itself by default, but this
+                // would make sense if we did. You could add srcset here,
+                // and if you do the URL is checked for safety
+                img: ["src"],
+              },
+            }),
           }}
         />
       </main>
